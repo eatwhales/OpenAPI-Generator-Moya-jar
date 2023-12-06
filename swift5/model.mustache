@@ -6,10 +6,6 @@
 //
 
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif{{#useVapor}}
-import Vapor{{/useVapor}}
 {{#swiftUseApiNamespace}}
 
 @available(*, deprecated, renamed: "{{projectName}}API.{{classname}}")

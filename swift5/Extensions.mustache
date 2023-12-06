@@ -5,11 +5,6 @@
 //
 
 import Foundation
-#if canImport(AnyCodable)
-import AnyCodable
-#endif{{#usePromiseKit}}
-import PromiseKit{{/usePromiseKit}}{{#useVapor}}
-import Vapor{{/useVapor}}{{^useVapor}}
 
 extension Bool: JSONEncodable {
     func encodeToJSON() -> Any { self }
