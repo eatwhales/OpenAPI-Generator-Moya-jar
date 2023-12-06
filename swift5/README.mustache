@@ -47,33 +47,54 @@ Class | Method | HTTP request | Description
 
 
 enum API { {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+
+
+
     //{{summary}}
     case {{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{^-first}}, {{/-first}}{{/isBodyParam}}{{paramName}}: {{#isEnum}}{{#isContainer}}[{{enumName}}_{{operationId}}]{{/isContainer}}{{^isContainer}}{{enumName}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{/isHeaderParam}}{{/allParams}}){{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+
+
+    
 }
 
 extension API: TargetType {
 
-    var baseURL: URL { return URL(string: "{{basePath}}")! }
-
     var path: String {
         switch self { {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+
+
+
+
         //{{summary}}
         case .{{operationId}}{{#pathParams}}{{#-first}}(let {{paramName}}){{/-first}}{{/pathParams}}:
             return "{{path}}{{#pathParams}}{{#-first}}/\({{paramName}}){{/-first}}{{/pathParams}}"{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
         }
+
+
+
     }
 
     var method: Moya.Method {
         switch self { {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+
+
+
+
         //{{summary}}
         case .{{operationId}}:
             return .{{httpMethod}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
         }
+
+
+
     }
 
     var task: Moya.Task {
         var params: [String: Any] = [:]
         switch self { {{#apiInfo}}{{#apis}}{{#operations}}{{#operation}}
+
+
+
             //{{summary}}
             case .{{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{^-first}}, {{/-first}}{{/isBodyParam}}let {{paramName}}{{/isHeaderParam}}{{/allParams}}):
             
@@ -81,10 +102,7 @@ extension API: TargetType {
             if let {{paramName}} {
                 params["{{paramName}}"] = {{paramName}}    
             }{{/isBodyParam}}{{/required}}{{#required}}
-            params["{{paramName}}"] = {{paramName}}    {{/required}}{{/isHeaderParam}}
-            
-{{/allParams}}
-
+            params["{{paramName}}"] = {{paramName}}{{/required}}{{/isHeaderParam}}{{/allParams}}
             {{#hasBodyParam}}
             {{#bodyParam}}
                 return .requestJSONEncodable({{paramName}}})
@@ -97,6 +115,10 @@ extension API: TargetType {
             {{^hasQueryParams}}{{^hasBodyParam}}{{^hasFormParams}}
             return .requestPlain{{/hasFormParams}}{{/hasBodyParam}}{{/hasQueryParams}}{{#hasQueryParams}}
             return .requestParameters(parameters: params, encoding: URLEncoding.default){{/hasQueryParams}}{{/operation}}{{/operations}}{{/apis}}{{/apiInfo}}
+
+
+
+
         }
     }
 
@@ -125,7 +147,7 @@ extension API: TargetType {
         - returns: {{{returnType}}}{{#returnType}}{{#isResponseOptional}}?{{/isResponseOptional}}{{/returnType}}{{^returnType}}Void{{/returnType}} {{description}}
     */
     func {{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{^-first}}, {{/-first}}{{/isBodyParam}}{{paramName}}: {{#isEnum}}{{#isContainer}}[{{enumName}}_{{operationId}}]{{/isContainer}}{{^isContainer}}{{enumName}}_{{operationId}}{{/isContainer}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{/isEnum}}{{^required}}? = nil{{/required}}{{/isHeaderParam}}{{/allParams}}) -> Observable<{{{returnType}}}{{#returnType}}{{#isResponseOptional}}?{{/isResponseOptional}}{{/returnType}}{{^returnType}}Void{{/returnType}}{{description}}> {
-        return apiService.rx.request(LoginAPI.{{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{^-first}}, {{/-first}}{{/isBodyParam}}{{paramName}}: {{paramName}}{{/isHeaderParam}}{{/allParams}}).asMultiTarget)
+        return apiService.rx.request(<#api#>.{{operationId}}({{#allParams}}{{^isHeaderParam}}{{^isBodyParam}}{{^-first}}, {{/-first}}{{/isBodyParam}}{{paramName}}: {{paramName}}{{/isHeaderParam}}{{/allParams}}).asMultiTarget)
             .asObservable()
             .authHandler()
             .filterSuccessfulStatusAndRedirectCodes()
